@@ -1,4 +1,16 @@
 package Application;
 
-public class AutoModeStrategy {
+public class AutoModeStrategy implements IStadiumModeStrategy {
+    @Override
+    public void executeBehavior(StadiumController context) {
+        // Logic for Light Threshold
+        if (context.getCurrentLightLevel() < context.getLightThreshold()) {
+            context.toggleLight("ZONE_A", true);
+        }
+
+        // Logic for Entry/Security Threshold
+        if (context.getEntryCount() > context.getEntryThreshold()) {
+            context.triggerAlarm(true);
+        }
+    }
 }

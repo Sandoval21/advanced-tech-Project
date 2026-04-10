@@ -1,4 +1,8 @@
 package Domain;
 
-public class EntryCounterSensor {
+public class EntryCounterSensor extends Sensor {
+    @Override
+    public double readValue() {
+        return value;
+    }
 }

@@ -10,15 +10,27 @@ public class ConsoleUI implements Observer {
     }
 
     public void parseCommand(String cmd) {
-        facade.processCommand(cmd);
+        if (cmd.equals("SIMULATE ENTRY")) {
+            // Simulamos que el hardware envió la señal de una persona
+            facade.simulatePersonEntry();
+        }
     }
 
-    public void displayDashboard() {
-        System.out.println(facade.getDashboard());
-    }
-
-    @Override
     public void update(String msg) {
-        System.out.println("[LIVE DATA UPDATE]: " + msg);
+        System.out.println(">>> ACTUALIZACIÓN: " + msg);
+        displayDashboard();
+    }
+
+    private void displayDashboard() {
+        System.out.println("\n========================================");
+        System.out.println("   ESTADIO BELLO HORIZONTE 'REY PELE'   ");
+        System.out.println("           ESTADO DEL SISTEMA           ");
+        System.out.println("========================================");
+
+    // Obtenemos los datos a través de la Fachada
+        String data = facade.getDashboard();
+        System.out.println(data);
+
+        System.out.println("========================================\n");
     }
 }

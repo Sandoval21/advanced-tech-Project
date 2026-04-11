@@ -2,15 +2,12 @@ package Application;
 
 public class AutoModeStrategy implements IStadiumModeStrategy {
     @Override
-    public void executeBehavior(StadiumController context,String sensorData) {
-        // Logic for Light Threshold
-        if (context.getCurrentLightLevel() < context.getLightThreshold()) {
-            context.toggleLight("ZONE_A", true);
-        }
-
-        // Logic for Entry/Security Threshold
+    public void executeBehavior(StadiumController context, String sensorData) {
+        // Verificamos si el conteo actual superó el umbral definido
         if (context.getEntryCount() > context.getEntryThreshold()) {
             context.triggerAlarm(true);
+        } else {
+            context.triggerAlarm(false);
         }
     }
 }

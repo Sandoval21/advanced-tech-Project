@@ -5,11 +5,18 @@ public class StadiumFacade {
     private StadiumController controller = StadiumController.getInstance();
 
     public String getDashboard() {
-        return "Stadium Status: OK | Mode: " + controller.getClass().getSimpleName();
+        return String.format(
+                " > OCUPACIÓN ACTUAL: %d personas\n" +
+                        " > NIVEL DE LUZ:    %d\n" +
+                        " > MODO ACTIVO:     %s",
+                controller.getEntryCount(),      // Corresponde al primer %d
+                controller.getCurrentLightLevel(), // Corresponde al segundo %d
+                "MODO MANUAL"                     // Corresponde al %s
+        );
     }
 
-    public void processCommand(String cmd) {
-        if (cmd.startsWith("MODE")) controller.setMode(cmd.split(" ")[1]);
-        else if (cmd.startsWith("SET THRESHOLD")) controller.setEntryThreshold(Integer.parseInt(cmd.split(" ")[2]));
+    public void simulatePersonEntry() {
+        // Le pasamos al controlador la cadena que el Arduino enviaría
+        controller.processSensorData("ENTRY:1");
     }
 }

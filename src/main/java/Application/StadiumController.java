@@ -17,8 +17,8 @@ public class StadiumController {
     private IHardwareComm hardwareComm;
     private int entryThreshold;
     private int lightThreshold;
-    private int entryCount;
-    private int currentLightLevel;
+    private int entryCount =0;
+    private int currentLightLevel=0;
 
     private static StadiumController instance;
 
@@ -47,20 +47,39 @@ public class StadiumController {
     }
 
     public void triggerAlarm(boolean state) {
-        if (hardwareComm != null) hardwareComm.sendCommand("ALARM:" + (state ? "ON" : "OFF"));
+        if (state) {
+            System.out.println("!!! [ALERTA] EXCESO DE PERSONAS: ALARMA ACTIVADA !!!");
+        } else {
+            System.out.println(">>> Alarma desactivada.");
+        }
     }
 
     public void processSensorData(String data) {
-        // Procesa datos y ejecuta estrategia
-        if (modeStrategy != null) modeStrategy.executeBehavior(this, data);
-        notifyObservers(data);
+        // Supongamos que el hardware envía "ENTRY:1" cuando detecta paso
+        // y "LIGHT:450" para la opacidad.
+
+        if (data.equals("ENTRY:1")) {
+            this.entryCount++; // Incrementa contador (HU-03)
+        } else if (data.startsWith("LIGHT:")) {
+            this.currentLightLevel = Integer.parseInt(data.split(":")[1]);
+        }
+
+        // Una vez actualizados los datos, notificamos a la consola (HU-02)
+        notifyObservers("Datos recibidos: " + data);
+
+        // Ejecutamos la estrategia automática si está activa
+        if (modeStrategy != null) {
+            modeStrategy.executeBehavior(this, data);
+        }
     }
 
     public void addObserver(ConsoleUI obs) { observers.add(obs); }
     public void removeObserver(Observer obs) { observers.remove(obs); }
 
     private void notifyObservers(String msg) {
-        for (Observer obs : observers) obs.update(msg);
+        for (Observer obs : observers) {
+            obs.update(msg);
+        }
     }
 
     public int getCurrentLightLevel() {
@@ -72,10 +91,10 @@ public class StadiumController {
     }
 
     public int getEntryCount() {
-        return this.entryCount;
+        return entryCount;
     }
 
     public int getEntryThreshold() {
-        return this.entryThreshold;
+        return entryThreshold;
     }
 }
